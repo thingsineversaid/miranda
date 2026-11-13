@@ -1,12 +1,215 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kelas Miranda</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Pengetahuan Umum</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 350px;
+            max-width: 85%;
+            text-align: center;
+            box-shadow: 0 4px 10px #ccc;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #question {
+            font-size: 18px;
+            margin: 25px 0;
+        }
+
+        .answer-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .answer-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .selected {
+            background: #c7d2fe;
+        }
+
+        #next-btn, #restart-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Selamat datang!</h1>
-<p>Website Pribadi.</p>
+
+<div class="quiz-container">
+    <h1>Quiz Pengetahuan Umum</h1>
+
+    <p id="number"></p>
+    <h3 id="question"></h3>
+
+    <div id="answers"></div>
+
+    <button id="next-btn" onclick="nextQuestion()">
+        Next
+    </button>
+
+    <div id="result"></div>
+
+    <button id="restart-btn" onclick="restartQuiz()" style="display:none">
+        Ulangi Quiz
+    </button>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Apa ibu kota Indonesia?",
+            answers: ["Jakarta", "Bandung", "Medan", "Surabaya"],
+            correct: 0
+        },
+        {
+            question: "Berapa hasil dari 5 x 5?",
+            answers: ["10", "20", "25", "30"],
+            correct: 2
+        },
+        {
+            question: "Planet terbesar di tata surya adalah?",
+            answers: ["Mars", "Jupiter", "Venus", "Bumi"],
+            correct: 1
+        },
+        {
+            question: "Hewan yang dikenal sebagai raja hutan adalah?",
+            answers: ["Gajah", "Harimau", "Singa", "Serigala"],
+            correct: 2
+        },
+        {
+            question: "Apa warna hasil campuran merah dan putih?",
+            answers: ["Ungu", "Pink", "Hijau", "Biru"],
+            correct: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+
+    function showQuestion() {
+        selectedAnswer = null;
+
+        const q = questions[currentQuestion];
+
+        document.getElementById("number").innerText =
+            "Pertanyaan " + (currentQuestion + 1) +
+            " dari " + questions.length;
+
+        document.getElementById("question").innerText =
+            q.question;
+
+        const answersDiv = document.getElementById("answers");
+        answersDiv.innerHTML = "";
+
+        q.answers.forEach((answer, index) => {
+            const button = document.createElement("button");
+
+            button.innerText = answer;
+            button.className = "answer-btn";
+
+            button.onclick = function() {
+                selectedAnswer = index;
+
+                document.querySelectorAll(".answer-btn")
+                    .forEach(btn => btn.classList.remove("selected"));
+
+                button.classList.add("selected");
+            };
+
+            answersDiv.appendChild(button);
+        });
+    }
+
+    function nextQuestion() {
+        if (selectedAnswer === null) {
+            alert("Silakan pilih jawaban terlebih dahulu!");
+            return;
+        }
+
+        if (selectedAnswer === questions[currentQuestion].correct) {
+            score++;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById("number").style.display = "none";
+        document.getElementById("question").style.display = "none";
+        document.getElementById("answers").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+
+        document.getElementById("result").innerText =
+            "Quiz selesai! Nilai kamu: " +
+            score + " dari " + questions.length;
+
+        document.getElementById("restart-btn").style.display = "inline-block";
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+
+        document.getElementById("number").style.display = "block";
+        document.getElementById("question").style.display = "block";
+        document.getElementById("answers").style.display = "block";
+        document.getElementById("next-btn").style.display = "inline-block";
+        document.getElementById("result").innerText = "";
+        document.getElementById("restart-btn").style.display = "none";
+
+        showQuestion();
+    }
+
+    showQuestion();
+</script>
+
 </body>
 </html>
